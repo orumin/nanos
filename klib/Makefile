@@ -125,6 +125,7 @@ INCLUDES= \
 	-I$(SRCDIR)/kernel \
 	-I$(SRCDIR)/net \
 	-I$(SRCDIR)/runtime \
+	-I$(PLATFORMDIR)
 
 DEFINES= \
 	-DKLIB \
