@@ -410,13 +410,13 @@ void thread_pause(thread t)
 
 void thread_resume(thread t)
 {
+    nanos_thread old = get_current_thread();
+    if (old && old != &t->thrd)
+        apply(old->pause);
     count_syscall_resume(t);
     if (get_current_thread() == &t->thrd)
         return;
     t->start_time = now(CLOCK_ID_MONOTONIC);
-    context f = thread_frame(t);
-    frame_restore_tls(f);
-    frame_restore_fpsimd(f);
     set_current_thread(&t->thrd);
 }
 
