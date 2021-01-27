@@ -296,6 +296,12 @@ void mbedtls_platform_zeroize( void *buf, size_t len )
 
 void *mbedtls_calloc(size_t n, size_t s)
 {
+    /* To maintain the malloc/free interface with mcache, allocations must stay
+       within the range of objcaches and not fall back to parent allocs. */
+    if (s > U64_FROM_BIT(MAX_MCACHE_ORDER)) {
+        tls.rprintf("%s: size %ld exceeds max alloc order\n", __func__, s);
+        return 0;
+    }
     void *p = allocate(tls.h, n * s);
     if (p != INVALID_ADDRESS) {
         kern_funcs.memset(p, 0, n * s);
